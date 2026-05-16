@@ -1,239 +1,101 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pay USDT</title>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<style>
-body{
-margin:0;
-font-family:Arial,sans-serif;
-color:white;
-background:linear-gradient(135deg,#0f172a,#1e40af,#06b6d4);
-min-height:100vh;
-padding-bottom:90px;
-}
-
-.bg{
-position:fixed;
-top:30%;
-left:5%;
-font-size:65px;
-font-weight:bold;
-opacity:.06;
-}
-
-.card{
-margin:15px;
-padding:20px;
-border-radius:20px;
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(8px);
-}
-
-button{
-width:100%;
-padding:14px;
-border:none;
-border-radius:14px;
-margin-top:10px;
-}
-
-input{
-width:100%;
-padding:14px;
-border:none;
-border-radius:14px;
-margin-top:10px;
-box-sizing:border-box;
-}
-
-.bottom{
-position:fixed;
-bottom:0;
-left:0;
-width:100%;
-display:flex;
-background:#111;
-}
-
-.bottom button{
-border-radius:0;
-margin:0;
-}
-
-.hide{
-display:none;
-}
-</style>
-
-</head>
-<body>
-
-<div class="bg">PAY USDT</div>
-
-<div id="home" class="page">
-
-<div class="card">
-<h2>Balance</h2>
-<p id="balance">0.00 PAY USDT</p>
-</div>
-
-<div class="card">
-<h2>Mining</h2>
-<h1 id="timer">24:00:00</h1>
-<button id="claimBtn">Claim 0.05</button>
-</div>
-
-</div>
-
-
-<div id="refer" class="page hide">
-
-<div class="card">
-
-<h2>Referral</h2>
-
-<p>Reward: 0.20 PAY USDT</p>
-
-<p>
-Referrals:
-<span id="refs">0</span>
-</p>
-
-<input id="refLink" readonly>
-
-<button onclick="copyRef()">
-Copy Link
-</button>
-
-</div>
-
-</div>
-
-
-<div id="withdraw" class="page hide">
-
-<div class="card">
-
-<h2>Withdraw</h2>
-
-<input placeholder="Binance ID">
-
-<input placeholder="Amount">
-
-<button>Withdraw</button>
-
-<p>Minimum: 2 PAY USDT</p>
-<p>Payments arrive in 3–7 days</p>
-
-</div>
-
-</div>
-
-
-<div id="profile" class="page hide">
-
-<div class="card" id="profileData"></div>
-
-</div>
-
-
-<div class="bottom">
-
-<button onclick="show('home')">Home</button>
-
-<button onclick="show('refer')">Refer</button>
-
-<button onclick="show('withdraw')">Withdraw</button>
-
-<button onclick="show('profile')">Profile</button>
-
-</div>
-
-
 <script>
 
-const tg = window.Telegram?.WebApp;
+window.Telegram.WebApp.ready();
+window.Telegram.WebApp.expand();
 
-let username="DemoUser";
-let telegramId="";
+const tg = window.Telegram.WebApp;
 
-if(
-tg &&
-tg.initDataUnsafe &&
-tg.initDataUnsafe.user
-){
+let user = tg.initDataUnsafe?.user;
 
-const user=tg.initDataUnsafe.user;
+let telegramId;
+let username;
 
-username=user.first_name;
+if(user){
 
-telegramId=String(user.id);
+ telegramId=String(user.id);
+
+ username=
+ user.first_name||
+ "User";
 
 }else{
 
-telegramId=
-localStorage.getItem("demoid");
+ telegramId=
+ "demo_"+
+ Date.now()+
+ Math.floor(
+ Math.random()*99999
+ );
 
-if(!telegramId){
-
-telegramId=
-String(
-Date.now()
-);
-
-localStorage.setItem(
-"demoid",
-telegramId
-);
-
-}
+ username=
+ "DemoUser";
 
 }
 
 const uid=
 "UID_"+telegramId;
 
-document.getElementById(
+
+document
+.getElementById(
 "profileData"
-).innerHTML=`
+)
+
+.innerHTML=
+
+`
 
 <h2>Profile</h2>
 
-UID: ${uid}
+UID:
+${uid}
 
 <br><br>
 
-Username: ${username}
+Username:
+${username}
 
 `;
 
-document.getElementById(
+
+document
+.getElementById(
 "refLink"
-).value=
+)
+
+.value=
 
 "https://t.me/MiningPayBot?start="+uid;
 
 
-let balance=parseFloat(
+let balance=
+
+parseFloat(
+
 localStorage.getItem(
 "bal_"+telegramId
 )||0
+
 );
 
-document.getElementById(
+document
+.getElementById(
 "balance"
-).innerText=
-balance.toFixed(2)+" PAY USDT";
+)
+
+.innerText=
+
+balance.toFixed(2)+
+" PAY USDT";
 
 
-document.getElementById(
+document
+.getElementById(
 "refs"
-).innerText=
+)
+
+.innerText=
+
 localStorage.getItem(
 "refs_"+telegramId
 )||0;
@@ -242,135 +104,16 @@ localStorage.getItem(
 function copyRef(){
 
 navigator.clipboard.writeText(
-document.getElementById(
+
+document
+.getElementById(
 "refLink"
 ).value
+
 );
 
 alert("Copied");
 
 }
 
-function show(id){
-
-document
-.querySelectorAll(".page")
-.forEach(p=>{
-
-p.classList.add(
-"hide"
-)
-
-})
-
-document
-.getElementById(id)
-.classList.remove(
-"hide"
-)
-
-}
-
-
-let last=
-localStorage.getItem(
-"last_"+telegramId
-)||0;
-
-
-function update(){
-
-let now=
-Date.now();
-
-let diff=
-86400000-
-(now-last);
-
-if(diff<=0){
-
-document
-.getElementById(
-"timer"
-)
-.innerText=
-"Ready";
-
-}else{
-
-let h=
-Math.floor(
-diff/1000/60/60
-);
-
-let m=
-Math.floor(
-(diff/1000/60)%60
-);
-
-let s=
-Math.floor(
-(diff/1000)%60
-);
-
-document
-.getElementById(
-"timer"
-)
-.innerText=
-h+":"+m+":"+s;
-
-}
-
-}
-
-update();
-
-setInterval(
-update,
-1000
-);
-
-
-document
-.getElementById(
-"claimBtn"
-)
-
-.onclick=()=>{
-
-let now=
-Date.now();
-
-if(
-now-last>=86400000
-){
-
-balance+=0.05;
-
-localStorage.setItem(
-"bal_"+telegramId,
-balance
-);
-
-localStorage.setItem(
-"last_"+telegramId,
-now
-);
-
-location.reload();
-
-}else{
-
-alert(
-"Come after 24h"
-);
-
-}
-
-}
-
 </script>
-
-</body>
-</html>
