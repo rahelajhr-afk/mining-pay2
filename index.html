@@ -3,6 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pay USDT</title>
+
 <style>
 
 body{
@@ -10,29 +11,23 @@ background:#111;
 color:white;
 font-family:Arial;
 margin:0;
-padding-bottom:80px;
+padding:0 0 90px;
 }
 
 .bg{
 position:fixed;
-top:40%;
-left:10%;
-font-size:60px;
+top:35%;
+left:5%;
+font-size:70px;
 opacity:.05;
+font-weight:bold;
 }
 
 .card{
-background:#1e1e1e;
+background:#1f1f1f;
 margin:15px;
 padding:20px;
 border-radius:20px;
-}
-
-.bottom{
-position:fixed;
-bottom:0;
-display:flex;
-width:100%;
 }
 
 button{
@@ -42,6 +37,13 @@ border:none;
 border-radius:15px;
 }
 
+.bottom{
+position:fixed;
+bottom:0;
+display:flex;
+width:100%;
+}
+
 .hide{
 display:none;
 }
@@ -49,7 +51,7 @@ display:none;
 input{
 width:100%;
 padding:15px;
-margin:10px 0;
+margin:8px 0;
 }
 
 </style>
@@ -57,28 +59,31 @@ margin:10px 0;
 
 <body>
 
-<div class="bg">PAY USDT</div>
+<div class="bg">
+PAY USDT
+</div>
 
 <div id="home" class="page">
 
-<h1>Pay USDT Mining</h1>
-
 <div class="card">
 
-Balance:
-<p id="bal">0.00 PAY USDT</p>
+<h2>Balance</h2>
+
+<p id="balance">
+0.00 PAY USDT
+</p>
 
 </div>
 
 <div class="card">
 
-Daily Claim
+<h2>Mining</h2>
 
-<h2 id="timer">
-24:00:00
-</h2>
+<h1 id="timer">
+Loading...
+</h1>
 
-<button>
+<button id="claimBtn">
 Claim 0.05
 </button>
 
@@ -86,18 +91,25 @@ Claim 0.05
 
 </div>
 
-<div id="refer" class="page hide">
+
+<div id="refer"
+class="page hide">
 
 <h2>Referral</h2>
 
+<p>
 0.20 PAY USDT per referral
+</p>
 
 </div>
+
 
 <div id="withdraw"
 class="page hide">
 
-<h2>Withdraw</h2>
+<h2>
+Withdraw
+</h2>
 
 <input
 placeholder="Binance ID">
@@ -110,27 +122,31 @@ Withdraw
 </button>
 
 <p>
-Minimum:
-2 PAY USDT
+Minimum:2 PAY USDT
 </p>
 
 <p>
-Payment:
-3-7 days
+Payments arrive in 3-7 days
 </p>
 
 </div>
+
 
 <div id="profile"
 class="page hide">
 
-UID: UID001
+<h2>Profile</h2>
+
+UID:
+UID001
 
 <br><br>
 
-Username: User
+Username:
+User
 
 </div>
+
 
 <div class="bottom">
 
@@ -152,15 +168,16 @@ Profile
 
 </div>
 
+
 <script>
 
 function show(id){
 
 document
 .querySelectorAll(".page")
-.forEach(a=>{
+.forEach(x=>{
 
-a.classList
+x.classList
 .add("hide")
 
 })
@@ -169,6 +186,119 @@ document
 .getElementById(id)
 .classList
 .remove("hide")
+
+}
+
+let balance=
+localStorage.getItem("bal")||0
+
+let last=
+localStorage.getItem("last")||0
+
+document
+.getElementById("balance")
+.innerText=
+balance+" PAY USDT"
+
+
+function update(){
+
+let now=
+Date.now()
+
+let diff=
+86400000-
+(now-last)
+
+if(diff<=0){
+
+document
+.getElementById(
+"timer"
+)
+.innerText=
+"Ready"
+
+}else{
+
+let h=
+Math.floor(
+diff/1000/60/60
+)
+
+let m=
+Math.floor(
+(diff/1000/60)%60
+)
+
+let s=
+Math.floor(
+(diff/1000)%60
+)
+
+document
+.getElementById(
+"timer"
+)
+
+.innerText=
+
+h+":"+
+m+":"+
+s
+
+}
+
+}
+
+setInterval(
+update,
+1000
+)
+
+update()
+
+document
+.getElementById(
+"claimBtn"
+)
+
+.onclick=()=>{
+
+let now=
+Date.now()
+
+if(
+now-last
+>=86400000
+){
+
+balance=
+parseFloat(
+balance
+)+0.05
+
+localStorage
+.setItem(
+"bal",
+balance
+)
+
+localStorage
+.setItem(
+"last",
+now
+)
+
+location.reload()
+
+}else{
+
+alert(
+"Come after 24h"
+)
+
+}
 
 }
 
