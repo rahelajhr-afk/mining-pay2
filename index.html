@@ -162,29 +162,23 @@ document.getElementById("profileData").innerHTML = `
     Username: ${username}
 `;
 
-// আপনার বটের ইউজারনেম @Miningtestpaybot এখানে সেট করা হয়েছে
 document.getElementById("refLink").value = "https://t.me/Miningtestpaybot?start=" + telegramId;
 
 function loadUserData() {
-    fetch(DATABASE_URL, {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify({
-            action: "getUser",
-            telegramId: telegramId,
-            startParam: startParam
-        })
-    }).then(() => {
-        balance = parseFloat(localStorage.getItem("bal_" + telegramId) || 0);
-        totalRefs = parseInt(localStorage.getItem("refs_" + telegramId) || 0);
-        
-        if (startParam && startParam !== telegramId && !localStorage.getItem("ref_done_" + telegramId)) {
-            localStorage.setItem("ref_done_" + telegramId, "true");
+    let url = DATABASE_URL + "?action=getUser&telegramId=" + telegramId + "&startParam=" + startParam;
+    
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+        if(data) {
+            balance = parseFloat(data.balance || 0);
+            totalRefs = parseInt(data.referrals || 0);
+            updateUI();
         }
-        
-        updateUI();
     }).catch(err => {
         console.error(err);
+        balance = parseFloat(localStorage.getItem("bal_" + telegramId) || 0);
+        totalRefs = parseInt(localStorage.getItem("refs_" + telegramId) || 0);
         updateUI();
     });
 }
@@ -196,15 +190,8 @@ function updateUI() {
 
 function syncBalanceWithDatabase(newBalance) {
     localStorage.setItem("bal_" + telegramId, newBalance);
-    fetch(DATABASE_URL, {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify({
-            action: "updateBalance",
-            telegramId: telegramId,
-            balance: newBalance
-        })
-    });
+    let url = DATABASE_URL + "?action=updateBalance&telegramId=" + telegramId + "&balance=" + newBalance;
+    fetch(url);
 }
 
 function copyRef() {
