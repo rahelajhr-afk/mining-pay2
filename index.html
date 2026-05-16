@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Pay USDT</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
 
@@ -55,6 +59,7 @@ margin:8px 0;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -101,6 +106,10 @@ class="page hide">
 0.20 PAY USDT per referral
 </p>
 
+<p>
+Referral Count:0
+</p>
+
 </div>
 
 
@@ -135,15 +144,7 @@ Payments arrive in 3-7 days
 <div id="profile"
 class="page hide">
 
-<h2>Profile</h2>
-
-UID:
-UID001
-
-<br><br>
-
-Username:
-User
+Loading...
 
 </div>
 
@@ -171,6 +172,62 @@ Profile
 
 <script>
 
+const tg=
+window.Telegram.WebApp;
+
+tg.expand();
+
+let user=
+tg.initDataUnsafe?.user;
+
+if(user){
+
+let uid=
+localStorage.getItem(
+"userUID"
+);
+
+if(!uid){
+
+uid=
+"UID"+
+Date.now()+
+Math.floor(
+Math.random()*999
+);
+
+localStorage
+.setItem(
+"userUID",
+uid
+)
+
+}
+
+document
+.getElementById(
+"profile"
+)
+
+.innerHTML=
+
+`
+
+<h2>Profile</h2>
+
+UID:
+${uid}
+
+<br><br>
+
+Username:
+${user.first_name}
+
+`
+
+}
+
+
 function show(id){
 
 document
@@ -189,16 +246,27 @@ document
 
 }
 
+
+
 let balance=
-localStorage.getItem("bal")||0
+localStorage
+.getItem("bal")||0
 
 let last=
-localStorage.getItem("last")||0
+localStorage
+.getItem("last")||0
+
 
 document
-.getElementById("balance")
+.getElementById(
+"balance"
+)
+
 .innerText=
-balance+" PAY USDT"
+
+balance+
+" PAY USDT"
+
 
 
 function update(){
@@ -216,6 +284,7 @@ document
 .getElementById(
 "timer"
 )
+
 .innerText=
 "Ready"
 
@@ -257,6 +326,8 @@ update,
 )
 
 update()
+
+
 
 document
 .getElementById(
