@@ -1,29 +1,45 @@
-<h1>Mining Pay</h1>
-
-<div class="box">
-<h2>Balance</h2>
-<h1 id="bal">0 Pay-USDT</h1>
+<!DOCTYPE html><html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mining Pay</title>
+<style>
+body{margin:0;background:#0f172a;color:white;font-family:Arial;padding:16px}
+.top{background:linear-gradient(135deg,#7c3aed,#06b6d4);padding:25px;border-radius:25px;text-align:center}
+.card{background:#1e293b;padding:16px;border-radius:20px;margin-top:15px}
+button{width:100%;padding:14px;border:none;border-radius:14px;background:#22c55e;color:white;font-size:18px}
+input{width:100%;padding:12px;border:none;border-radius:12px;margin-top:10px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#111827;padding:14px;display:flex;justify-content:space-around}
+.small{opacity:.8}
+</style>
+</head>
+<body>
+<h2>Mining Pay</h2>
+<div class='top'>
+<h3>Total Balance</h3>
+<h1 id='bal'>0 Pay‑USDT</h1>
+<p class='small'>Daily Profit: 5%</p>
 </div>
-
-<div class="card">
-<h3>⛏ Mining</h3>
-<button onclick="mine()">Start Mining</button>
+<div class='card'>
+<h3>⛏ Mining Center</h3>
+<p>Tap and earn coins</p>
+<button onclick='mine()'>Start Mining</button>
 </div>
-
+<div class='card'>
+<h3>💰 Withdraw</h3>
+<input placeholder='Binance Pay ID'>
+<input placeholder='Amount'>
+<br><br>
+<button>Submit Request</button>
+</div>
+<div class='card'>
+<h3>👥 Referral</h3>
+<p>Invite friends and earn bonus</p>
+</div>
+<div class='nav'>🏠 Home 💳 Wallet 👤 Profile</div>
 <script>
-let balance = localStorage.getItem("bal") || 0;
-
-document.getElementById("bal").innerText =
-balance + " Pay-USDT";
-
-function mine(){
-
-balance = Number(balance)+1;
-
-localStorage.setItem("bal",balance);
-
-document.getElementById("bal").innerText =
-balance + " Pay-USDT";
-
-}
+let balance=localStorage.getItem('bal')||0;
+document.getElementById('bal').innerText=balance+' Pay‑USDT';
+function mine(){balance=Number(balance)+1;localStorage.setItem('bal',balance);document.getElementById('bal').innerText=balance+' Pay‑USDT';}
 </script>
+</body>
+</html>
