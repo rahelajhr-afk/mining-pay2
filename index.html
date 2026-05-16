@@ -1,78 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mining Pay</title>
-
-<style>
-body{
-background:#111827;
-font-family:Arial;
-color:white;
-padding:20px;
-margin:0;
-}
-
-.box{
-background:linear-gradient(135deg,#7c3aed,#06b6d4);
-padding:20px;
-border-radius:25px;
-text-align:center;
-margin-top:20px;
-}
-
-.card{
-background:#1f2937;
-padding:15px;
-border-radius:20px;
-margin-top:15px;
-}
-
-button{
-width:100%;
-padding:14px;
-border:none;
-border-radius:12px;
-background:#06b6d4;
-color:white;
-font-size:18px;
-}
-
-input{
-width:95%;
-padding:12px;
-margin-top:10px;
-border-radius:10px;
-border:none;
-}
-</style>
-
-</head>
-<body>
-
 <h1>Mining Pay</h1>
 
 <div class="box">
 <h2>Balance</h2>
-<h1>0 Pay-USDT</h1>
-<p>Daily Profit: 5%</p>
+<h1 id="bal">0 Pay-USDT</h1>
 </div>
 
 <div class="card">
-<h3>Mining</h3>
-<button>⛏ Start Mining</button>
+<h3>⛏ Mining</h3>
+<button onclick="mine()">Start Mining</button>
 </div>
 
-<div class="card">
-<h3>Withdraw</h3>
+<script>
+let balance = localStorage.getItem("bal") || 0;
 
-<input placeholder="Binance Pay ID">
+document.getElementById("bal").innerText =
+balance + " Pay-USDT";
 
-<input placeholder="Amount">
+function mine(){
 
-<button>Submit Request</button>
+balance = Number(balance)+1;
 
-</div>
+localStorage.setItem("bal",balance);
 
-</body>
-</html>
+document.getElementById("bal").innerText =
+balance + " Pay-USDT";
+
+}
+</script>
