@@ -1,101 +1,177 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mining Pay</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pay USDT</title>
 <style>
-body{margin:0;background:#0f172a;color:white;font-family:Arial;padding:16px}
-.top{background:linear-gradient(135deg,#7c3aed,#06b6d4);padding:25px;border-radius:25px;text-align:center}
-.card{background:#1e293b;padding:16px;border-radius:20px;margin-top:15px}
-button{width:100%;padding:14px;border:none;border-radius:14px;background:#22c55e;color:white;font-size:18px}
-input{width:100%;padding:12px;border:none;border-radius:12px;margin-top:10px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#111827;padding:14px;display:flex;justify-content:space-around}
-.small{opacity:.8}
+
+body{
+background:#111;
+color:white;
+font-family:Arial;
+margin:0;
+padding-bottom:80px;
+}
+
+.bg{
+position:fixed;
+top:40%;
+left:10%;
+font-size:60px;
+opacity:.05;
+}
+
+.card{
+background:#1e1e1e;
+margin:15px;
+padding:20px;
+border-radius:20px;
+}
+
+.bottom{
+position:fixed;
+bottom:0;
+display:flex;
+width:100%;
+}
+
+button{
+width:100%;
+padding:15px;
+border:none;
+border-radius:15px;
+}
+
+.hide{
+display:none;
+}
+
+input{
+width:100%;
+padding:15px;
+margin:10px 0;
+}
+
 </style>
 </head>
 
 <body>
 
-<h2>Mining Pay</h2>
+<div class="bg">PAY USDT</div>
 
-<div class='top'>
-<h3>Total Balance</h3>
-<h1 id='bal'>0 Pay-USDT</h1>
-<p class='small'>Daily Profit: 5%</p>
+<div id="home" class="page">
+
+<h1>Pay USDT Mining</h1>
+
+<div class="card">
+
+Balance:
+<p id="bal">0.00 PAY USDT</p>
+
 </div>
 
-<div class='card'>
-<h3>⛏ Mining Center</h3>
-<button onclick='mine()'>Start Mining</button>
+<div class="card">
+
+Daily Claim
+
+<h2 id="timer">
+24:00:00
+</h2>
+
+<button>
+Claim 0.05
+</button>
+
 </div>
 
-<div class='card'>
-<h3>💰 Withdraw</h3>
-<input id="wallet" placeholder='Wallet ID'>
-<input id="amount" placeholder='Amount'>
-<button onclick="withdraw()">Withdraw</button>
 </div>
 
-<div class='nav'>🏠 Home 💳 Wallet 👤 Profile</div>
+<div id="refer" class="page hide">
+
+<h2>Referral</h2>
+
+0.20 PAY USDT per referral
+
+</div>
+
+<div id="withdraw"
+class="page hide">
+
+<h2>Withdraw</h2>
+
+<input
+placeholder="Binance ID">
+
+<input
+placeholder="Amount">
+
+<button>
+Withdraw
+</button>
+
+<p>
+Minimum:
+2 PAY USDT
+</p>
+
+<p>
+Payment:
+3-7 days
+</p>
+
+</div>
+
+<div id="profile"
+class="page hide">
+
+UID: UID001
+
+<br><br>
+
+Username: User
+
+</div>
+
+<div class="bottom">
+
+<button onclick="show('home')">
+Home
+</button>
+
+<button onclick="show('refer')">
+Refer
+</button>
+
+<button onclick="show('withdraw')">
+Withdraw
+</button>
+
+<button onclick="show('profile')">
+Profile
+</button>
+
+</div>
 
 <script>
-const API = "https://mining-backend2.onrender.com";
 
-const tg = window.Telegram?.WebApp;
-tg?.ready();
+function show(id){
 
-const userId = tg?.initDataUnsafe?.user?.id || "demo_user";
+document
+.querySelectorAll(".page")
+.forEach(a=>{
 
-let balance = 0;
+a.classList
+.add("hide")
 
-// ================= LOAD USER =================
-async function loadUser(){
-  try{
-    let res = await fetch(`${API}/user/${userId}`);
-    let data = await res.json();
+})
 
-    balance = data.balance || 0;
-    document.getElementById('bal').innerText = balance + " Pay-USDT";
-  }catch(e){
-    console.log(e);
-  }
+document
+.getElementById(id)
+.classList
+.remove("hide")
+
 }
 
-// ================= MINE =================
-async function mine(){
-  let res = await fetch(`${API}/mine`, {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({ userId })
-  });
-
-  let data = await res.json();
-
-  balance = data.balance;
-  document.getElementById('bal').innerText = balance + " Pay-USDT";
-}
-
-// ================= WITHDRAW =================
-async function withdraw(){
-  let wallet = document.getElementById("wallet").value;
-  let amount = document.getElementById("amount").value;
-
-  await fetch(`${API}/withdraw`, {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({
-      userId,
-      wallet,
-      amount:Number(amount)
-    })
-  });
-
-  alert("Withdraw request sent");
-}
-
-// INIT
-window.onload = loadUser;
 </script>
 
 </body>
