@@ -1,9 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pay USDT</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+
+body{
+margin:0;
+padding:0 0 90px;
+font-family:Arial;
+color:white;
+background:linear-gradient(135deg,#0f172a,#1e3a8a,#2563eb);
+min-height:100vh;
+}
+
+.bg{
+position:fixed;
+top:30%;
+left:5%;
+font-size:70px;
+font-weight:bold;
+opacity:.06;
+}
+
+.card{
+background:rgba(255,255,255,.1);
+margin:15px;
+padding:20px;
+border-radius:20px;
+backdrop-filter:blur(10px);
+}
+
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:15px;
+margin-top:10px;
+}
+
+input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:15px;
+margin-top:10px;
+}
+
+.bottom{
+position:fixed;
+bottom:0;
+width:100%;
+display:flex;
+background:#111;
+}
+
+.hide{
+display:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg">PAY USDT</div>
+
+<div id="home" class="page">
+
+<div class="card">
+<h2>Balance</h2>
+<p id="balance">0.00 PAY USDT</p>
+</div>
+
+<div class="card">
+
+<h2>Mining</h2>
+
+<h1 id="timer">24:00:00</h1>
+
+<button id="claimBtn">
+Claim 0.05
+</button>
+
+</div>
+
+</div>
+
+
+
+<div id="refer" class="page hide">
+
+<div class="card">
+
+<h2>Referral</h2>
+
+<p>Reward: 0.20 PAY USDT</p>
+
+<p>
+Referrals:
+<span id="refs">0</span>
+</p>
+
+<input id="refLink" readonly>
+
+<button onclick="copyRef()">
+Copy Link
+</button>
+
+</div>
+
+</div>
+
+
+
+<div id="withdraw" class="page hide">
+
+<div class="card">
+
+<h2>Withdraw</h2>
+
+<input placeholder="Binance ID">
+
+<input placeholder="Amount">
+
+<button>
+Withdraw
+</button>
+
+<p>Minimum:2 PAY USDT</p>
+
+<p>Payment:3-7 Days</p>
+
+</div>
+
+</div>
+
+
+
+<div id="profile" class="page hide">
+
+<div class="card" id="profileData">
+
+Loading...
+
+</div>
+
+</div>
+
+
+<div class="bottom">
+
+<button onclick="show('home')">
+Home
+</button>
+
+<button onclick="show('refer')">
+Refer
+</button>
+
+<button onclick="show('withdraw')">
+Withdraw
+</button>
+
+<button onclick="show('profile')">
+Profile
+</button>
+
+</div>
+
+
 <script>
 
-const tg=window.Telegram?.WebApp
+const tg=window.Telegram?.WebApp;
 
-let username="Guest"
-let telegramId="demo"
+let username="Guest";
+let telegramId="guest";
 
 if(
 tg &&
@@ -11,20 +186,17 @@ tg.initDataUnsafe &&
 tg.initDataUnsafe.user
 ){
 
-let u=
-tg.initDataUnsafe.user
+let user=tg.initDataUnsafe.user
 
-username=
-u.first_name
+username=user.first_name
 
 telegramId=
-String(u.id)
+String(user.id)
 
 }
 
 let uid=
-"UID"+telegramId
-
+"UID_"+telegramId
 
 document
 .getElementById(
@@ -34,7 +206,6 @@ document
 .innerHTML=
 
 `
-
 <h2>Profile</h2>
 
 UID:
@@ -44,8 +215,8 @@ ${uid}
 
 Username:
 ${username}
-
 `
+
 
 document
 .getElementById(
@@ -57,7 +228,6 @@ document
 "https://t.me/MiningPayBot?start="+telegramId
 
 
-
 let balance=
 
 parseFloat(
@@ -66,9 +236,7 @@ localStorage.getItem(
 "bal_"+telegramId
 )
 
-||0
-
-)
+||0)
 
 
 document
@@ -94,6 +262,7 @@ document
 localStorage.getItem(
 "refs_"+telegramId
 )
+
 ||0
 
 
@@ -111,12 +280,9 @@ document
 
 )
 
-alert(
-"Copied"
-)
+alert("Copied")
 
 }
-
 
 
 function show(id){
@@ -126,20 +292,17 @@ document
 ".page"
 )
 
-.forEach(x=>{
+.forEach(e=>{
 
-x.classList
-.add("hide")
+e.classList.add(
+"hide"
+)
 
 })
 
 document
-.getElementById(
-id
-)
-
-.classList
-.remove(
+.getElementById(id)
+.classList.remove(
 "hide"
 )
 
@@ -154,7 +317,6 @@ localStorage.getItem(
 )
 
 ||0
-
 
 
 function update(){
@@ -179,19 +341,13 @@ document
 }else{
 
 let h=
-Math.floor(
-diff/1000/60/60
-)
+Math.floor(diff/1000/60/60)
 
 let m=
-Math.floor(
-(diff/1000/60)%60
-)
+Math.floor((diff/1000/60)%60)
 
 let s=
-Math.floor(
-(diff/1000)%60
-)
+Math.floor((diff/1000)%60)
 
 document
 .getElementById(
@@ -200,22 +356,18 @@ document
 
 .innerText=
 
-h+":"+
-m+":"+
-s
+h+":"+m+":"+s
 
 }
 
 }
 
+update()
 
 setInterval(
 update,
 1000
 )
-
-update()
-
 
 
 document
@@ -239,21 +391,14 @@ balance+0.05
 
 localStorage
 .setItem(
-
 "bal_"+telegramId,
-
 balance
-
 )
-
 
 localStorage
 .setItem(
-
 "last_"+telegramId,
-
 now
-
 )
 
 location.reload()
@@ -268,4 +413,7 @@ alert(
 
 }
 
-  </script>
+</script>
+
+</body>
+</html>
