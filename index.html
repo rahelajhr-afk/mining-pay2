@@ -1,38 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pay USDT</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#0f172a,#1e3a8a,#06b6d4);
+color:white;
+padding-bottom:90px;
+min-height:100vh;
+}
+
+.bg{
+position:fixed;
+top:30%;
+left:5%;
+font-size:60px;
+font-weight:bold;
+opacity:.05;
+}
+
+.card{
+margin:15px;
+padding:20px;
+border-radius:20px;
+background:rgba(255,255,255,.1);
+backdrop-filter:blur(10px);
+}
+
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:14px;
+margin-top:10px;
+}
+
+input{
+width:100%;
+padding:14px;
+margin-top:10px;
+border:none;
+border-radius:14px;
+box-sizing:border-box;
+}
+
+.bottom{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+display:flex;
+background:#111;
+}
+
+.bottom button{
+margin:0;
+border-radius:0;
+}
+
+.hide{
+display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg">PAY USDT</div>
+
+<div id="home" class="page">
+
+<div class="card">
+<h2>Balance</h2>
+<p id="balance">0.00 PAY USDT</p>
+</div>
+
+<div class="card">
+<h2>Mining</h2>
+<h1 id="timer">Loading...</h1>
+<button id="claimBtn">Claim 0.05</button>
+</div>
+
+</div>
+
+
+<div id="refer" class="page hide">
+
+<div class="card">
+
+<h2>Referral</h2>
+
+<p>Reward: 0.20 PAY USDT</p>
+
+<p>
+Referrals:
+<span id="refs">0</span>
+</p>
+
+<input id="refLink" readonly>
+
+<button onclick="copyRef()">
+Copy Link
+</button>
+
+</div>
+
+</div>
+
+
+<div id="withdraw" class="page hide">
+
+<div class="card">
+
+<h2>Withdraw</h2>
+
+<input placeholder="Binance ID">
+
+<input placeholder="Amount">
+
+<button>Withdraw</button>
+
+<p>Minimum: 2 PAY USDT</p>
+
+<p>Payment: 3-7 days</p>
+
+</div>
+
+</div>
+
+
+<div id="profile" class="page hide">
+
+<div class="card" id="profileData">
+Loading...
+</div>
+
+</div>
+
+
+
+<div class="bottom">
+
+<button onclick="show('home')">
+Home
+</button>
+
+<button onclick="show('refer')">
+Refer
+</button>
+
+<button onclick="show('withdraw')">
+Withdraw
+</button>
+
+<button onclick="show('profile')">
+Profile
+</button>
+
+</div>
+
+
 <script>
 
-window.Telegram.WebApp.ready();
-window.Telegram.WebApp.expand();
+let username="User";
+let telegramId="";
 
-const tg = window.Telegram.WebApp;
+try{
 
-let user = tg.initDataUnsafe?.user;
+if(window.Telegram){
 
-let telegramId;
-let username;
+Telegram.WebApp.ready();
+
+Telegram.WebApp.expand();
+
+const user=
+Telegram.WebApp
+.initDataUnsafe
+?.user;
 
 if(user){
 
- telegramId=String(user.id);
+username=
+user.first_name;
 
- username=
- user.first_name||
- "User";
-
-}else{
-
- telegramId=
- "demo_"+
- Date.now()+
- Math.floor(
- Math.random()*99999
- );
-
- username=
- "DemoUser";
+telegramId=
+String(user.id);
 
 }
 
-const uid=
+}
+
+}catch(e){}
+
+if(!telegramId){
+
+telegramId=
+localStorage.getItem(
+"demoId"
+);
+
+if(!telegramId){
+
+telegramId=
+String(
+Date.now()+
+Math.floor(
+Math.random()*99999
+)
+);
+
+localStorage.setItem(
+"demoId",
+telegramId
+);
+
+}
+
+}
+
+
+let uid=
 "UID_"+telegramId;
 
 
@@ -44,7 +238,6 @@ document
 .innerHTML=
 
 `
-
 <h2>Profile</h2>
 
 UID:
@@ -54,7 +247,6 @@ ${uid}
 
 Username:
 ${username}
-
 `;
 
 
@@ -68,8 +260,8 @@ document
 "https://t.me/MiningPayBot?start="+uid;
 
 
-let balance=
 
+let balance=
 parseFloat(
 
 localStorage.getItem(
@@ -78,6 +270,7 @@ localStorage.getItem(
 
 );
 
+
 document
 .getElementById(
 "balance"
@@ -85,8 +278,9 @@ document
 
 .innerText=
 
-balance.toFixed(2)+
-" PAY USDT";
+balance.toFixed(2)
++" PAY USDT";
+
 
 
 document
@@ -116,4 +310,118 @@ alert("Copied");
 
 }
 
+
+function show(id){
+
+document
+.querySelectorAll(
+".page"
+)
+
+.forEach(e=>{
+
+e.classList.add(
+"hide"
+)
+
+})
+
+document
+.getElementById(id)
+.classList.remove(
+"hide"
+)
+
+}
+
+
+
+let last=
+localStorage.getItem(
+"last_"+telegramId
+)||0;
+
+
+function update(){
+
+let now=
+Date.now();
+
+let diff=
+86400000-
+(now-last);
+
+if(diff<=0){
+
+timer.innerText=
+"Ready";
+
+}else{
+
+let h=
+Math.floor(
+diff/1000/60/60
+);
+
+let m=
+Math.floor(
+(diff/1000/60)%60
+);
+
+let s=
+Math.floor(
+(diff/1000)%60
+);
+
+timer.innerText=
+h+":"+m+":"+s;
+
+}
+
+}
+
+setInterval(
+update,
+1000
+);
+
+update();
+
+
+claimBtn.onclick=()=>{
+
+let now=
+Date.now();
+
+if(
+now-last>=86400000
+){
+
+balance+=0.05;
+
+localStorage.setItem(
+"bal_"+telegramId,
+balance
+);
+
+localStorage.setItem(
+"last_"+telegramId,
+now
+);
+
+location.reload();
+
+}else{
+
+alert(
+"Come after 24h"
+);
+
+}
+
+}
+
 </script>
+
+</body>
+</html>
