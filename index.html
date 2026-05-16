@@ -79,7 +79,7 @@ display:none;
 <div id="home" class="page">
 <div class="card">
 <h2>Balance</h2>
-<p id="balance">0.00 PAY USDT</p>
+<p id="balance">Loading...</p>
 </div>
 
 <div class="card">
@@ -122,9 +122,14 @@ display:none;
 </div>
 
 <script>
+// আপনার দেওয়া Google Apps Script URL টি এখানে বসানো হয়েছে
+let DATABASE_URL = "https://script.google.com/macros/s/AKfycby9ExxwtPfrn10h7Ql7hhyOEmRl6am8ziFYG7dz9eTnpbtc21udhFRdaoYYdab0wDbO/exec";
+
 let username = "User";
 let telegramId = "";
 let startParam = "";
+let balance = 0.00;
+let totalRefs = 0;
 
 try {
     if (window.Telegram && window.Telegram.WebApp) {
@@ -158,27 +163,54 @@ document.getElementById("profileData").innerHTML = `
     Username: ${username}
 `;
 
+// আপনার বটের ইউজারনেম MiningPayBot না হলে সেটি পরিবর্তন করে নিতে পারেন
 document.getElementById("refLink").value = "https://t.me/MiningPayBot?start=" + telegramId;
 
-let balance = parseFloat(localStorage.getItem("bal_" + telegramId) || 0);
-let totalRefs = parseInt(localStorage.getItem("refs_" + telegramId) || 0);
-let hasReferrer = localStorage.getItem("referred_by_" + telegramId);
-
-if (startParam && startParam !== telegramId && !hasReferrer) {
-    localStorage.setItem("referred_by_" + telegramId, startParam);
-    balance += 0.20;
-    totalRefs += 1;
-    localStorage.setItem("bal_" + telegramId, balance);
-    localStorage.setItem("refs_" + telegramId, totalRefs);
+function loadUserData() {
+    fetch(DATABASE_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify({
+            action: "getUser",
+            telegramId: telegramId,
+            startParam: startParam
+        })
+    }).then(() => {
+        balance = parseFloat(localStorage.getItem("bal_" + telegramId) || 0);
+        totalRefs = parseInt(localStorage.getItem("refs_" + telegramId) || 0);
+        
+        if (startParam && startParam !== telegramId && !localStorage.getItem("ref_done_" + telegramId)) {
+            localStorage.setItem("ref_done_" + telegramId, "true");
+        }
+        
+        updateUI();
+    }).catch(err => {
+        console.error(err);
+        updateUI();
+    });
 }
 
-document.getElementById("balance").innerText = balance.toFixed(2) + " PAY USDT";
-document.getElementById("refs").innerText = totalRefs;
+function updateUI() {
+    document.getElementById("balance").innerText = balance.toFixed(2) + " PAY USDT";
+    document.getElementById("refs").innerText = totalRefs;
+}
+
+function syncBalanceWithDatabase(newBalance) {
+    localStorage.setItem("bal_" + telegramId, newBalance);
+    fetch(DATABASE_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify({
+            action: "updateBalance",
+            telegramId: telegramId,
+            balance: newBalance
+        })
+    });
+}
 
 function copyRef() {
     const copyText = document.getElementById("refLink");
     copyText.select();
-    copyText.setSelectionRange(0, 99999);
     navigator.clipboard.writeText(copyText.value);
     alert("Copied");
 }
@@ -213,13 +245,15 @@ document.getElementById("claimBtn").onclick = () => {
     let now = Date.now();
     if (now - last >= 86400000) {
         balance += 0.05;
-        localStorage.setItem("bal_" + telegramId, balance);
+        syncBalanceWithDatabase(balance);
         localStorage.setItem("last_" + telegramId, now);
         location.reload();
     } else {
         alert("Come after 24h");
     }
 }
+
+loadUserData();
 </script>
 
 </body>
