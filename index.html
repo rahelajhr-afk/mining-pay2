@@ -40,6 +40,7 @@ padding:14px;
 border:none;
 border-radius:14px;
 margin-top:10px;
+cursor:pointer;
 }
 
 input{
@@ -76,7 +77,6 @@ display:none;
 <div class="bg">PAY USDT</div>
 
 <div id="home" class="page">
-
 <div class="card">
 <h2>Balance</h2>
 <p id="balance">0.00 PAY USDT</p>
@@ -87,340 +87,139 @@ display:none;
 <h1 id="timer">Loading...</h1>
 <button id="claimBtn">Claim 0.05</button>
 </div>
-
 </div>
-
 
 <div id="refer" class="page hide">
-
 <div class="card">
-
 <h2>Referral</h2>
-
 <p>Reward: 0.20 PAY USDT</p>
-
-<p>
-Referrals:
-<span id="refs">0</span>
-</p>
-
+<p>Referrals: <span id="refs">0</span></p>
 <input id="refLink" readonly>
-
-<button onclick="copyRef()">
-Copy Link
-</button>
-
+<button onclick="copyRef()">Copy Link</button>
 </div>
-
 </div>
-
 
 <div id="withdraw" class="page hide">
-
 <div class="card">
-
 <h2>Withdraw</h2>
-
 <input placeholder="Binance ID">
-
 <input placeholder="Amount">
-
 <button>Withdraw</button>
-
 <p>Minimum: 2 PAY USDT</p>
-
 <p>Payment: 3-7 days</p>
-
 </div>
-
 </div>
-
 
 <div id="profile" class="page hide">
-
-<div class="card" id="profileData">
-Loading...
+<div class="card" id="profileData">Loading...</div>
 </div>
-
-</div>
-
-
 
 <div class="bottom">
-
-<button onclick="show('home')">
-Home
-</button>
-
-<button onclick="show('refer')">
-Refer
-</button>
-
-<button onclick="show('withdraw')">
-Withdraw
-</button>
-
-<button onclick="show('profile')">
-Profile
-</button>
-
+<button onclick="show('home')">Home</button>
+<button onclick="show('refer')">Refer</button>
+<button onclick="show('withdraw')">Withdraw</button>
+<button onclick="show('profile')">Profile</button>
 </div>
 
-
 <script>
+let username = "User";
+let telegramId = "";
+let startParam = "";
 
-let username="User";
-let telegramId="";
+try {
+    if (window.Telegram && window.Telegram.WebApp) {
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
 
-try{
-
-if(window.Telegram){
-
-Telegram.WebApp.ready();
-
-Telegram.WebApp.expand();
-
-const user=
-Telegram.WebApp
-.initDataUnsafe
-?.user;
-
-if(user){
-
-username=
-user.first_name;
-
-telegramId=
-String(user.id);
-
+        const user = Telegram.WebApp.initDataUnsafe?.user;
+        if (user) {
+            username = user.first_name || "User";
+            telegramId = String(user.id);
+        }
+        startParam = Telegram.WebApp.initDataUnsafe?.start_param || "";
+    }
+} catch (e) {
+    console.error(e);
 }
 
+if (!telegramId) {
+    telegramId = localStorage.getItem("demoId");
+    if (!telegramId) {
+        telegramId = String(Date.now() + Math.floor(Math.random() * 99999));
+        localStorage.setItem("demoId", telegramId);
+    }
 }
 
-}catch(e){}
+let uid = "UID_" + telegramId;
 
-if(!telegramId){
-
-telegramId=
-localStorage.getItem(
-"demoId"
-);
-
-if(!telegramId){
-
-telegramId=
-String(
-Date.now()+
-Math.floor(
-Math.random()*99999
-)
-);
-
-localStorage.setItem(
-"demoId",
-telegramId
-);
-
-}
-
-}
-
-
-let uid=
-"UID_"+telegramId;
-
-
-document
-.getElementById(
-"profileData"
-)
-
-.innerHTML=
-
-`
-<h2>Profile</h2>
-
-UID:
-${uid}
-
-<br><br>
-
-Username:
-${username}
+document.getElementById("profileData").innerHTML = `
+    <h2>Profile</h2>
+    UID: ${uid}<br><br>
+    Username: ${username}
 `;
 
+document.getElementById("refLink").value = "https://t.me/MiningPayBot?start=" + telegramId;
 
-document
-.getElementById(
-"refLink"
-)
+let balance = parseFloat(localStorage.getItem("bal_" + telegramId) || 0);
+let totalRefs = parseInt(localStorage.getItem("refs_" + telegramId) || 0);
+let hasReferrer = localStorage.getItem("referred_by_" + telegramId);
 
-.value=
-
-"https://t.me/MiningPayBot?start="+uid;
-
-
-
-let balance=
-parseFloat(
-
-localStorage.getItem(
-"bal_"+telegramId
-)||0
-
-);
-
-
-document
-.getElementById(
-"balance"
-)
-
-.innerText=
-
-balance.toFixed(2)
-+" PAY USDT";
-
-
-
-document
-.getElementById(
-"refs"
-)
-
-.innerText=
-
-localStorage.getItem(
-"refs_"+telegramId
-)||0;
-
-
-function copyRef(){
-
-navigator.clipboard.writeText(
-
-document
-.getElementById(
-"refLink"
-).value
-
-);
-
-alert("Copied");
-
+if (startParam && startParam !== telegramId && !hasReferrer) {
+    localStorage.setItem("referred_by_" + telegramId, startParam);
+    balance += 0.20;
+    totalRefs += 1;
+    localStorage.setItem("bal_" + telegramId, balance);
+    localStorage.setItem("refs_" + telegramId, totalRefs);
 }
 
+document.getElementById("balance").innerText = balance.toFixed(2) + " PAY USDT";
+document.getElementById("refs").innerText = totalRefs;
 
-function show(id){
-
-document
-.querySelectorAll(
-".page"
-)
-
-.forEach(e=>{
-
-e.classList.add(
-"hide"
-)
-
-})
-
-document
-.getElementById(id)
-.classList.remove(
-"hide"
-)
-
+function copyRef() {
+    const copyText = document.getElementById("refLink");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(copyText.value);
+    alert("Copied");
 }
 
-
-
-let last=
-localStorage.getItem(
-"last_"+telegramId
-)||0;
-
-
-function update(){
-
-let now=
-Date.now();
-
-let diff=
-86400000-
-(now-last);
-
-if(diff<=0){
-
-timer.innerText=
-"Ready";
-
-}else{
-
-let h=
-Math.floor(
-diff/1000/60/60
-);
-
-let m=
-Math.floor(
-(diff/1000/60)%60
-);
-
-let s=
-Math.floor(
-(diff/1000)%60
-);
-
-timer.innerText=
-h+":"+m+":"+s;
-
+function show(id) {
+    document.querySelectorAll(".page").forEach(e => {
+        e.classList.add("hide");
+    });
+    document.getElementById(id).classList.remove("hide");
 }
 
+let last = localStorage.getItem("last_" + telegramId) || 0;
+
+function update() {
+    let now = Date.now();
+    let diff = 86400000 - (now - last);
+
+    if (diff <= 0) {
+        document.getElementById("timer").innerText = "Ready";
+    } else {
+        let h = Math.floor(diff / 1000 / 60 / 60);
+        let m = Math.floor((diff / 1000 / 60) % 60);
+        let s = Math.floor((diff / 1000) % 60);
+        document.getElementById("timer").innerText = h + ":" + m + ":" + s;
+    }
 }
 
-setInterval(
-update,
-1000
-);
-
+setInterval(update, 1000);
 update();
 
-
-claimBtn.onclick=()=>{
-
-let now=
-Date.now();
-
-if(
-now-last>=86400000
-){
-
-balance+=0.05;
-
-localStorage.setItem(
-"bal_"+telegramId,
-balance
-);
-
-localStorage.setItem(
-"last_"+telegramId,
-now
-);
-
-location.reload();
-
-}else{
-
-alert(
-"Come after 24h"
-);
-
+document.getElementById("claimBtn").onclick = () => {
+    let now = Date.now();
+    if (now - last >= 86400000) {
+        balance += 0.05;
+        localStorage.setItem("bal_" + telegramId, balance);
+        localStorage.setItem("last_" + telegramId, now);
+        location.reload();
+    } else {
+        alert("Come after 24h");
+    }
 }
-
-}
-
 </script>
 
 </body>
