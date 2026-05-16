@@ -11,7 +11,12 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
-    background: radial-gradient(circle at top right, #1e3a8a 0%, #030712 100%);
+    /* আপনার দেওয়া পোস্টারের মতো ব্যাকগ্রাউন্ড ইমেজ এবং কালার */
+    background: radial-gradient(circle at top right, rgba(30, 58, 138, 0.7) 0%, rgba(3, 7, 18, 0.9) 100%), 
+                url('https://raw.githubusercontent.com/Akibul555/image/refs/heads/main/background.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     background-color: #000000;
     color: #ffffff;
     padding-bottom: 90px;
@@ -36,7 +41,7 @@ body {
     margin: 15px;
     padding: 20px;
     border-radius: 16px;
-    background: rgba(17, 25, 40, 0.75);
+    background: rgba(17, 25, 40, 0.75); /* ডার্ক গ্লাস এফেক্ট */
     backdrop-filter: blur(8px) saturate(180%);
     border: 1px solid rgba(74, 222, 128, 0.2);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
@@ -87,7 +92,7 @@ input:focus {
     width: 100%;
     display: flex;
     background: #000000;
-    border-top: 2px solid #06b6d4;
+    border-top: 2px solid #06b6d4; /* নিয়ন সায়ান বর্ডার */
 }
 
 .bottom button {
