@@ -122,7 +122,6 @@ display:none;
 </div>
 
 <script>
-// আপনার দেওয়া Google Apps Script URL টি এখানে বসানো হয়েছে
 let DATABASE_URL = "https://script.google.com/macros/s/AKfycby9ExxwtPfrn10h7Ql7hhyOEmRl6am8ziFYG7dz9eTnpbtc21udhFRdaoYYdab0wDbO/exec";
 
 let username = "User";
@@ -163,8 +162,8 @@ document.getElementById("profileData").innerHTML = `
     Username: ${username}
 `;
 
-// আপনার বটের ইউজারনেম MiningPayBot না হলে সেটি পরিবর্তন করে নিতে পারেন
-document.getElementById("refLink").value = "https://t.me/MiningPayBot?start=" + telegramId;
+// আপনার বটের ইউজারনেম @Miningtestpaybot এখানে সেট করা হয়েছে
+document.getElementById("refLink").value = "https://t.me/Miningtestpaybot?start=" + telegramId;
 
 function loadUserData() {
     fetch(DATABASE_URL, {
