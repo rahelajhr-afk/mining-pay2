@@ -8,66 +8,105 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
-body{
-margin:0;
-font-family:Arial;
-background:linear-gradient(135deg,#0f172a,#1e3a8a,#06b6d4);
-color:white;
-padding-bottom:90px;
-min-height:100vh;
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: radial-gradient(circle at top right, #1e3a8a 0%, #030712 100%);
+    background-color: #000000;
+    color: #ffffff;
+    padding-bottom: 90px;
+    min-height: 100vh;
 }
 
-.bg{
-position:fixed;
-top:30%;
-left:5%;
-font-size:60px;
-font-weight:bold;
-opacity:.05;
+.bg {
+    position: fixed;
+    top: 30%;
+    left: 5%;
+    font-size: 60px;
+    font-weight: bold;
+    opacity: .03;
 }
 
-.card{
-margin:15px;
-padding:20px;
-border-radius:20px;
-background:rgba(255,255,255,.1);
-backdrop-filter:blur(10px);
+.card h2, p#timer, .profile-uid {
+    color: #4ade80;
+    text-shadow: 0 0 10px #4ade80, 0 0 20px #22c55e;
 }
 
-button{
-width:100%;
-padding:14px;
-border:none;
-border-radius:14px;
-margin-top:10px;
-cursor:pointer;
+.card {
+    margin: 15px;
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(17, 25, 40, 0.75);
+    backdrop-filter: blur(8px) saturate(180%);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
-input{
-width:100%;
-padding:14px;
-margin-top:10px;
-border:none;
-border-radius:14px;
-box-sizing:border-box;
+button {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #4ade80;
+    border-radius: 14px;
+    margin-top: 10px;
+    cursor: pointer;
+    background: rgba(74, 222, 128, 0.1);
+    color: #4ade80;
+    font-weight: bold;
+    font-size: 16px;
+    text-transform: uppercase;
+    transition: 0.3s;
 }
 
-.bottom{
-position:fixed;
-bottom:0;
-left:0;
-width:100%;
-display:flex;
-background:#111;
+button:hover {
+    background: rgba(74, 222, 128, 0.3);
+    box-shadow: 0 0 15px #4ade80;
 }
 
-.bottom button{
-margin:0;
-border-radius:0;
+input {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 14px;
+    box-sizing: border-box;
+    font-size: 14px;
 }
 
-.hide{
-display:none;
+input:focus {
+    outline: none;
+    border-color: #06b6d4;
+    box-shadow: 0 0 10px #06b6d4;
+}
+
+.bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    background: #000000;
+    border-top: 2px solid #06b6d4;
+}
+
+.bottom button {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    color: rgba(255, 255, 255, 0.6);
+    background: none;
+    text-shadow: none;
+}
+
+.bottom button:hover, .bottom button.active {
+    color: #06b6d4;
+    text-shadow: 0 0 10px #06b6d4;
+    background: rgba(6, 182, 212, 0.1);
+}
+
+.hide {
+    display: none;
 }
 </style>
 </head>
@@ -122,7 +161,6 @@ display:none;
 </div>
 
 <script>
-// আপনার নতুন দেওয়া URL-টি এখানে বসানো হয়েছে
 let DATABASE_URL = "https://script.google.com/macros/s/AKfycbxuJx5e0DJGPlnSlbqYnd-tT95XdY9WplSgfitlKZTjx6dyish1a9KAaw4N-vTfqEk/exec";
 
 let username = "User";
@@ -159,7 +197,7 @@ let uid = "UID_" + telegramId;
 
 document.getElementById("profileData").innerHTML = `
     <h2>Profile</h2>
-    UID: ${uid}<br><br>
+    <div class="profile-uid">UID: ${uid}</div><br>
     Username: ${username}
 `;
 
@@ -207,6 +245,9 @@ function show(id) {
         e.classList.add("hide");
     });
     document.getElementById(id).classList.remove("hide");
+    
+    document.querySelectorAll(".bottom button").forEach(b => b.classList.remove("active"));
+    event.currentTarget.classList.add("active");
 }
 
 let last = localStorage.getItem("last_" + telegramId) || 0;
