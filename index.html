@@ -11,7 +11,6 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
-    /* আপনার দেওয়া পোস্টারের মতো ব্যাকগ্রাউন্ড ইমেজ এবং কালার */
     background: radial-gradient(circle at top right, rgba(30, 58, 138, 0.7) 0%, rgba(3, 7, 18, 0.9) 100%), 
                 url('https://raw.githubusercontent.com/Akibul555/image/refs/heads/main/background.webp');
     background-size: cover;
@@ -32,16 +31,32 @@ body {
     opacity: .03;
 }
 
-.card h2, p#timer, .profile-uid {
+.card h2, p#timer, .profile-uid, .user-display-name {
     color: #4ade80;
     text-shadow: 0 0 10px #4ade80, 0 0 20px #22c55e;
+}
+
+.user-display-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.profile-uid {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: none !important;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 8px;
+    display: inline-block;
 }
 
 .card {
     margin: 15px;
     padding: 20px;
     border-radius: 16px;
-    background: rgba(17, 25, 40, 0.75); /* ডার্ক গ্লাস এফেক্ট */
+    background: rgba(17, 25, 40, 0.75);
     backdrop-filter: blur(8px) saturate(180%);
     border: 1px solid rgba(74, 222, 128, 0.2);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
@@ -92,7 +107,7 @@ input:focus {
     width: 100%;
     display: flex;
     background: #000000;
-    border-top: 2px solid #06b6d4; /* নিয়ন সায়ান বর্ডার */
+    border-top: 2px solid #06b6d4;
 }
 
 .bottom button {
@@ -200,10 +215,11 @@ if (!telegramId) {
 
 let uid = "UID_" + telegramId;
 
+// আপনার চাহিদা অনুযায়ী উপরে নাম এবং নিচে আলাদা UID ডাইনামিকালি সেট করা হয়েছে
 document.getElementById("profileData").innerHTML = `
     <h2>Profile</h2>
-    <div class="profile-uid">UID: ${uid}</div><br>
-    Username: ${username}
+    <div class="user-display-name">${username}</div>
+    <div class="profile-uid">UID: ${uid}</div>
 `;
 
 document.getElementById("refLink").value = "https://t.me/Miningtestpaybot?start=" + telegramId;
