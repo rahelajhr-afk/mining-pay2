@@ -128,6 +128,49 @@ input:focus {
 .hide {
     display: none;
 }
+
+/* 🎯 নতুন উইথড্র বক্সের বিশেষ ডিজাইন (হাফ স্ক্রিন সাইজ) */
+.withdraw-coming-box {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.85) 100%);
+    border: 2px dashed #f59e0b; /* প্রিমিয়াম গোল্ডেন/অরেঞ্জ ড্যাশ বর্ডার */
+    border-radius: 20px;
+    padding: 40px 20px;
+    margin: 20px 15px;
+    min-height: 40vh; /* স্ক্রিনের প্রায় অর্ধেক জায়গা নিবে */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 40px rgba(245, 158, 11, 0.15);
+}
+
+.withdraw-coming-box h3 {
+    color: #f59e0b;
+    font-size: 28px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0 0 15px 0;
+    text-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+    animation: pulse 2s infinite;
+}
+
+.withdraw-coming-box p {
+    font-size: 18px;
+    color: #e2e8f0;
+    line-height: 1.6;
+    margin: 10px 0 0 0;
+    font-weight: 500;
+    background: rgba(245, 158, 11, 0.1);
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.03); opacity: 1; text-shadow: 0 0 25px rgba(245, 158, 11, 0.9); }
+    100% { transform: scale(1); opacity: 0.9; }
+}
 </style>
 </head>
 
@@ -159,13 +202,9 @@ input:focus {
 </div>
 
 <div id="withdraw" class="page hide">
-<div class="card">
-<h2>Withdraw</h2>
-<input placeholder="Binance ID">
-<input placeholder="Amount">
-<button>Withdraw</button>
-<p>Minimum: 2 PAY USDT</p>
-<p>Payment: 3-7 days</p>
+<div class="withdraw-coming-box">
+    <h3>⏳ Withdraw Coming Soon</h3>
+    <p>📢 জুলাইয়ের ১ তারিখ পেমেন্ট করা হবে।</p>
 </div>
 </div>
 
@@ -181,7 +220,7 @@ input:focus {
 </div>
 
 <script>
-// 🎯 আপনার দেওয়া একদম নতুন লিংকটি এখানে অ্যাড করা হয়েছে
+// 🎯 আপনার দেওয়া নতুন লিংকটি এখানে সুরক্ষিত আছে
 let DATABASE_URL = "https://script.google.com/macros/s/AKfycbwH3ROPnuf87P8wy-mFOQLIt5AG_SXl2LmsIV6L2ZCwyFAE7LYBRZmCcVW-5NwCfCZs/exec";
 
 let username = "User";
