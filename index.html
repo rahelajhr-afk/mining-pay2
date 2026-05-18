@@ -11,10 +11,12 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
-    background: radial-gradient(circle at top right, rgba(30, 58, 138, 0.7) 0%, rgba(3, 7, 18, 0.9) 100%), 
-                url('https://raw.githubusercontent.com/Akibul555/image/refs/heads/main/background.webp');
-    background-size: cover;
-    background-position: center;
+    /* 🎯 এখানে আপনার গোল্ডেন লোগোর ডিরেক্ট র-লিংকটি ব্যাকগ্রাউন্ড হিসেবে পারফেক্টলি সেট করা হয়েছে */
+    background: radial-gradient(circle at top right, rgba(15, 23, 42, 0.85) 0%, rgba(3, 7, 18, 0.95) 100%), 
+                url('https://raw.githubusercontent.com/rahelajhr-afk/mining-pay2/main/file_00000000b26c71f8adfaff7220514c66.png');
+    background-size: contain;
+    background-position: center 35%;
+    background-repeat: no-repeat;
     background-attachment: fixed;
     background-color: #000000;
     color: #ffffff;
@@ -52,14 +54,15 @@ body {
     display: inline-block;
 }
 
+/* 💡 কার্ডের ব্যাকগ্রাউন্ড কিছুটা ট্রান্সপারেন্ট করা হয়েছে যেন লোগো ব্যাকগ্রাউন্ড ফুটে ওঠে */
 .card {
     margin: 15px;
     padding: 20px;
     border-radius: 16px;
-    background: rgba(17, 25, 40, 0.75);
-    backdrop-filter: blur(8px) saturate(180%);
+    background: rgba(10, 15, 30, 0.7);
+    backdrop-filter: blur(12px) saturate(180%);
     border: 1px solid rgba(74, 222, 128, 0.2);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
 }
 
 button {
@@ -108,6 +111,7 @@ input:focus {
     display: flex;
     background: #000000;
     border-top: 2px solid #06b6d4;
+    z-index: 1000;
 }
 
 .bottom button {
@@ -155,7 +159,7 @@ input:focus {
 }
 
 .withdraw-coming-box p {
-    font-size: 18px;
+    font-size: 16px;
     color: #e2e8f0;
     line-height: 1.6;
     margin: 10px 0 0 0;
@@ -164,6 +168,8 @@ input:focus {
     padding: 12px 20px;
     border-radius: 12px;
     border: 1px solid rgba(245, 158, 11, 0.2);
+    width: 85%;
+    text-align: center;
 }
 
 @keyframes pulse {
@@ -220,7 +226,7 @@ input:focus {
 </div>
 
 <script>
-// 🎯 আপনার দেওয়া নতুন লিংকটি এখানে সুরক্ষিত আছে
+// 🎯 আপনার দেওয়া নতুন ডাটাবেজ লিংকটি এখানে সুরক্ষিত আছে
 let DATABASE_URL = "https://script.google.com/macros/s/AKfycbwH3ROPnuf87P8wy-mFOQLIt5AG_SXl2LmsIV6L2ZCwyFAE7LYBRZmCcVW-5NwCfCZs/exec";
 
 let username = "User";
