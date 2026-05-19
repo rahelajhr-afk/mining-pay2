@@ -63,7 +63,7 @@ body {
     margin-top: 2px;
 }
 
-/* 💳 মেইন ড্যাশবোর্ড কার্ড (AE_Tech এর টোটাল আর্নড স্টাইল) */
+/* 💳 মেইন ড্যাশবোর্ডカード (AE_Tech এর টোটাল আর্নড স্টাইল) */
 .main-card {
     margin: 15px;
     padding: 22px;
@@ -181,6 +181,22 @@ button:active {
     box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
 }
 
+/* 🎧 কাস্টমার সাপোর্ট স্পেশাল বাটন */
+.support-btn {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: #ffffff;
+    margin-top: 15px;
+    box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.support-btn:hover {
+    background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+}
+
 /* 📥 ইনপুট বক্স */
 input {
     width: 100%;
@@ -214,6 +230,11 @@ input:focus {
     margin-top: 0;
     font-size: 20px;
     font-weight: 600;
+}
+
+.card p {
+    font-size: 15px;
+    margin: 12px 0;
 }
 
 /* ⏳ উইথড্র বক্স (উইকেন্ড স্পেশাল ব্যানার স্টাইল) */
@@ -351,7 +372,21 @@ input:focus {
 </div>
 
 <div id="profile" class="page hide">
-    <div class="card" id="profileData">Loading...</div>
+    <div class="card">
+        <h2>Profile Details</h2>
+        <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;">
+            <p style="margin-top:0;"><strong>Name:</strong> <span id="profName" style="color: #3b82f6;">Loading...</span></p>
+            <p><strong>Account ID:</strong> <span id="profId" style="color: #94a3b8;">Loading...</span></p>
+            <p style="margin-bottom:0;"><strong>Status:</strong> <span style="background: rgba(74, 222, 128, 0.1); color: #4ade80; padding: 2px 8px; border-radius: 6px; font-size: 13px;">Active User</span></p>
+        </div>
+        
+        <h2>Help & Support</h2>
+        <p style="color: #94a3b8; font-size: 14px; line-height: 1.5;">If you face any issue regarding your balance, mining, or referrals, contact our support management team directly via Telegram.</p>
+        
+        <button class="support-btn" onclick="window.open('https://t.me/Payusdtcastomercare', '_blank')">
+            💬 Contact Customer Care
+        </button>
+    </div>
 </div>
 
 <div class="bottom">
@@ -395,18 +430,13 @@ if (!telegramId) {
     }
 }
 
-let uid = "UID_" + telegramId;
-
 // হেডার ডাটা আপডেট
 document.getElementById("topUsername").innerText = username;
 document.getElementById("topUid").innerText = "ID:" + telegramId;
 
-document.getElementById("profileData").innerHTML = `
-    <h2>Profile Details</h2>
-    <p><strong>Username:</strong> ${username}</p>
-    <p><strong>Account ID:</strong> ${telegramId}</p>
-    <p><strong>Status:</strong> Active User</p>
-`;
+// প্রোফাইল পেজের ডাটা আপডেট
+document.getElementById("profName").innerText = username;
+document.getElementById("profId").innerText = telegramId;
 
 document.getElementById("refLink").value = "https://t.me/Miningtestpaybot?start=" + telegramId;
 
@@ -510,4 +540,4 @@ loadUserData();
 </script>
 
 </body>
-</html>
+    </html>
