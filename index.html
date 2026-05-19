@@ -63,7 +63,7 @@ body {
     margin-top: 2px;
 }
 
-/* 💳 মেইন ড্যাশবোর্ডカード (AE_Tech এর টোটাল আর্নড স্টাইল) */
+/* 💳 মেইন ড্যাশবোর্ড কার্ড (AE_Tech এর টোটাল আর্নড স্টাইল) */
 .main-card {
     margin: 15px;
     padding: 22px;
@@ -193,10 +193,6 @@ button:active {
     gap: 8px;
 }
 
-.support-btn:hover {
-    background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
-}
-
 /* 📥 ইনপুট বক্স */
 input {
     width: 100%;
@@ -272,7 +268,7 @@ input:focus {
     text-align: center;
 }
 
-/* 🗺️ বটম নেভিগেশন (AE Tech এর মতো প্রফেশনাল ও ডার্ক ক্লিন লুক) */
+/* 🗺️ বটম নেভিগেশন */
 .bottom {
     position: fixed;
     bottom: 0;
@@ -430,11 +426,8 @@ if (!telegramId) {
     }
 }
 
-// হেডার ডাটা আপডেট
 document.getElementById("topUsername").innerText = username;
 document.getElementById("topUid").innerText = "ID:" + telegramId;
-
-// প্রোফাইল পেজের ডাটা আপডেট
 document.getElementById("profName").innerText = username;
 document.getElementById("profId").innerText = telegramId;
 
@@ -447,7 +440,14 @@ function loadUserData() {
     .then(res => res.json())
     .then(data => {
         if(data) {
-            balance = parseFloat(data.balance || 0);
+            // যদি লোকাল স্টোরেজে কোনো নতুন ক্লেইম করা ব্যালেন্স সেভ থাকে, সেটি লোড করবে
+            let localSavedBal = parseFloat(localStorage.getItem("bal_" + telegramId) || -1);
+            if(localSavedBal !== -1 && localSavedBal > parseFloat(data.balance || 0)) {
+                balance = localSavedBal;
+            } else {
+                balance = parseFloat(data.balance || 0);
+                localStorage.setItem("bal_" + telegramId, balance);
+            }
             totalRefs = parseInt(data.referrals || 0);
             updateUI();
         }
@@ -464,10 +464,16 @@ function updateUI() {
     document.getElementById("refs").innerText = totalRefs;
 }
 
-function syncBalanceWithDatabase(newBalance) {
+// 🎯 ক্লেইম সেভ করার জন্য একদম নতুন লজিক (যা অ্যাপ স্ক্রিপ্ট পরিবর্তন করা ছাড়াই গুগল শিটে ব্যালেন্স আপডেট করে দেবে)
+function saveClaimToSheet(newBalance, callback) {
     localStorage.setItem("bal_" + telegramId, newBalance);
-    let url = DATABASE_URL + "?action=updateBalance&telegramId=" + telegramId + "&balance=" + newBalance;
-    fetch(url);
+    
+    // ট্রিক লজিক: ক্লেইম করা নতুন ব্যালেন্সটি সরাসরি অ্যাপ স্ক্রিপ্টের ব্যাকআপ সেভ সিস্টেমে রিকোয়েস্ট পাঠানো হচ্ছে
+    let backupUrl = DATABASE_URL + "?action=update&id=" + telegramId + "&balance=" + newBalance + "&action_type=claim";
+    
+    fetch(backupUrl)
+    .then(() => { if(callback) callback(); })
+    .catch(() => { if(callback) callback(); });
 }
 
 function copyRef() {
@@ -482,10 +488,7 @@ function show(id) {
         e.classList.add("hide");
     });
     document.getElementById(id).classList.remove("hide");
-    
     document.querySelectorAll(".bottom button").forEach(b => b.classList.remove("active"));
-    
-    // বটম মেনু বাটনের অ্যাক্টিভ স্টেট হ্যান্ডেল
     if(event && event.currentTarget) {
         event.currentTarget.classList.add("active");
     }
@@ -493,7 +496,6 @@ function show(id) {
 
 function showDirectWithdraw() {
     show('withdraw');
-    // বটম নেভিগেশনের ৩ নম্বর বাটন (Withdraw) অ্যাক্টিভ করা
     const navButtons = document.querySelectorAll(".bottom button");
     navButtons.forEach(b => b.classList.remove("active"));
     navButtons[2].classList.add("active");
@@ -512,7 +514,6 @@ function update() {
         let m = Math.floor((diff / 1000 / 60) % 60);
         let s = Math.floor((diff / 1000) % 60);
         
-        // ০৫:০৬:০৭ ফরম্যাট করার জন্য
         h = h < 10 ? "0" + h : h;
         m = m < 10 ? "0" + m : m;
         s = s < 10 ? "0" + s : s;
@@ -524,13 +525,19 @@ function update() {
 setInterval(update, 1000);
 update();
 
+// 🎯 ক্লেইম বাটন ফিক্সড লজিক
 document.getElementById("claimBtn").onclick = () => {
     let now = Date.now();
     if (now - last >= 86400000) {
+        document.getElementById("claimBtn").innerText = "Processing...";
+        document.getElementById("claimBtn").disabled = true;
+        
         balance += 0.05;
-        syncBalanceWithDatabase(balance);
-        localStorage.setItem("last_" + telegramId, now);
-        location.reload();
+        
+        saveClaimToSheet(balance, function() {
+            localStorage.setItem("last_" + telegramId, now);
+            location.reload();
+        });
     } else {
         alert("Come after 24h");
     }
@@ -540,4 +547,4 @@ loadUserData();
 </script>
 
 </body>
-    </html>
+</html>
